@@ -14,11 +14,12 @@ and it will delete the files in the directory which are older than the selected 
 
 From my POV, to be done:
 - Adjust position of time picker.
-- Iterate over folders within the selected directory.
 - Add dialog to let user decide whether they want to resize images or delete files. (Compress some files an option? https://superuser.com/questions/1283070/is-is-good-idea-to-store-long-term-data-in-zip-format)
 - Work on improving overall user experience.
-- Publish repository to Accenture github.
+- Publish repository to Accenture github. https://github.com/vicmi-dev/eco-bot.git
 - Divide project in different classes.
+- Group datepicker and filesize in one column (Left size?)
+- Resize images on the right. (Right column?)
 """
 
 import os
@@ -34,6 +35,7 @@ from tkinter import messagebox as mb
 #How to change scope of variable root so it is accessible within the definition
 #global root 
 
+    
 #Initializing tkimport
 root = tk.Tk()
 
@@ -72,92 +74,98 @@ entry1 = tk.Entry (root)
 entry1.insert(0, "200")
 canvas2.create_window(400, 100, window=entry1)
 
-def choose_directory():
-    """Function to choose the directory""" 
-    rootDirectory = tk.Tk()
-    myDir = tkinter.filedialog.askdirectory(parent=rootDirectory, initialdir="/",
-                                        title='Please select a directory')
-    rootDirectory.destroy()
-    return myDir
+class deleteFilesInFolder:
 
-def get_file_access_date(file_path):
+    def __init__(self):
+        pass
+
+    def choose_directory(self):
+        """Function to choose the directory""" 
+        rootDirectory = tk.Tk()
+        myDir = tkinter.filedialog.askdirectory(parent=rootDirectory, initialdir="/",
+                                            title='Please select a directory')
+        rootDirectory.destroy()
+        return myDir
+
+    def get_file_access_date(self, file_path):
         """Function to get last access time of""" 
         stat_result = Path(file_path).stat()
         modified_date = datetime.fromtimestamp(stat_result.st_mtime, tz=timezone.utc)
         return modified_date
 
-
-def clean_files(myDir):
-    """Function to get last access time of""" 
-    bytesTreshold = int(entry1.get())
-    files_to_clean = []
-    print("Number of files in folder is: ", len(os.listdir(myDir)), os.listdir(myDir))
-    if len(os.listdir(myDir)) > 0:
-        for subdir, dirs, files in os.walk(myDir):
-            for file in files:
-                file_path = os.path.join(subdir, file)
-                modified_date = get_file_access_date(file_path)
-                print("Last date of access is: ", modified_date, " it should be after : ", dateentry.get_date())
-                fileSize = os.path.getsize(file_path)
-                print("File name in the loop: ", file)
-                print("Dir loop: " , os.path.join(subdir, file))
-                print("Size of file is: " + str(fileSize) + " it should be less than :" + str(bytesTreshold))
-                if modified_date.date() < dateentry.get_date():
-                    print("True", modified_date.date(),  dateentry.get_date() )
+    def clean_files(self, myDir):
+        """Function to get last access time of""" 
+        bytesTreshold = int(entry1.get())
+        files_to_clean = []
+        print("Number of files in folder is: ", len(os.listdir(myDir)), os.listdir(myDir))
+        if len(os.listdir(myDir)) > 0:
+            for subdir, dirs, files in os.walk(myDir):
+                for file in files:
+                    file_path = os.path.join(subdir, file)
+                    modified_date = self.get_file_access_date(file_path)
+                    print("Last date of access is: ", modified_date, " it should be after : ", dateentry.get_date())
+                    fileSize = os.path.getsize(file_path)
+                    print("File name in the loop: ", file)
+                    print("Dir loop: " , os.path.join(subdir, file))
+                    print("Size of file is: " + str(fileSize) + " it should be less than :" + str(bytesTreshold))
+                    if modified_date.date() < dateentry.get_date():
+                        print("True", modified_date.date(),  dateentry.get_date() )
+                    else:
+                        print("False", modified_date.date(),  dateentry.get_date() )
+                    if fileSize > bytesTreshold:
+                        print("True", fileSize, bytesTreshold)
+                    else:
+                        print("False", fileSize, bytesTreshold)
+                    if modified_date.date() < dateentry.get_date() and fileSize > bytesTreshold:
+                        files_to_clean.append(file_path)
+                    else:
+                        print("False no files matching", fileSize, bytesTreshold, modified_date.date(),  dateentry.get_date())                             
+                    print("--------------------------------------")
+            if len(files_to_clean) > 0:
+                if self.delete_verification(files_to_clean, myDir):
+                    #Delete the files
+                    for file in files_to_clean:
+                        os.remove(file)
+                        print(f"""Following files are deleted {"-- ".join(files_to_clean)} from folder {myDir}""")
+                        for subdir, dirs, files in os.walk(myDir):
+                            for file in files:
+                                print(os.path.join(subdir, file))
+                    #Delete empty folders
+                    self.remove_empty_folders(myDir)
                 else:
-                    print("False", modified_date.date(),  dateentry.get_date() )
-                if fileSize > bytesTreshold:
-                    print("True", fileSize, bytesTreshold)
-                else:
-                    print("False", fileSize, bytesTreshold)
-                if modified_date.date() < dateentry.get_date() and fileSize > bytesTreshold:
-                    files_to_clean.append(file_path)
-                else:
-                    print("False no files matching", fileSize, bytesTreshold, modified_date.date(),  dateentry.get_date())                             
-                print("--------------------------------------")
-        if len(files_to_clean) > 0:
-            if delete_verification(files_to_clean, myDir):
-                #Delete the files
-                for file in files_to_clean:
-                    #os.remove(file)
-                    print(f"""Following files are deleted {"-- ".join(files_to_clean)} from folder {myDir}""")
-                    for subdir, dirs, files in os.walk(myDir):
-                        for file in files:
-                            print(os.path.join(subdir, file))
-                #Delete empty folders
-                remove_empty_folders(myDir)
+                    print("Deletion aborted")
             else:
-                print("Deletion aborted")
+                mb.showinfo("showinfo", "There are no files with the parameters defined.")
         else:
-            mb.showinfo("showinfo", "There are no files with the parameters defined.")
-    else:
-        mb.showinfo("showinfo", "The selected directory is empty")
+            mb.showinfo("showinfo", "The selected directory is empty")
 
-def remove_empty_folders(path_abs):
-    """Delete empty folders"""
-    walk = list(os.walk(path_abs))
-    for path, _, _ in walk[::-1]:
-        if len(os.listdir(path)) == 0:
-            os.rmdir(path)
-            print(path, " has been removed")
+    def remove_empty_folders(self, path_abs):
+        """Delete empty folders"""
+        walk = list(os.walk(path_abs))
+        for path, _, _ in walk[::-1]:
+            if len(os.listdir(path)) == 0:
+                os.rmdir(path)
+                print(path, " has been removed")
 
-def delete_verification(files_to_clean, myDir):
-    """Verify whether user really wants to delete the files"""
-    if mb.askyesno('Verify', f"""Do you want to delete these files?
-    {'"-- "'.join(files_to_clean)}"""):
-        mb.showwarning('Yes', 'Files deleted successfully')
-        return True
-    else:
-        mb.showinfo('No', 'No problem')
-        return False
+    def delete_verification(self, files_to_clean, myDir):
+        """Verify whether user really wants to delete the files"""
+        if mb.askyesno('Verify', f"""Do you want to delete these files?
+        {'"-- "'.join(files_to_clean)}"""):
+            mb.showwarning('Yes', 'Files deleted successfully')
+            return True
+        else:
+            mb.showinfo('No', 'No problem')
+            return False
 
-def save_space():
-    """Function to save space on disk""" 
-    myDir = choose_directory()
-    clean_files(myDir)
+    def save_space(self):
+        """Function to save space on disk""" 
+        myDir = self.choose_directory()
+        self.clean_files(myDir)
+
+intance = deleteFilesInFolder()
 
 #Button to choose the directory            
-button1 = tk.Button (root, text="Let's save some space",command=save_space, bg='palegreen2', font=('Arial', 11, 'bold')) 
+button1 = tk.Button (root, text="Let's save some space",command=intance.save_space, bg='palegreen2', font=('Arial', 11, 'bold')) 
 canvas2.create_window(400, 180, window=button1)
 
 #Button to exit the app
