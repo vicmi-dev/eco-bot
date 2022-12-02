@@ -20,6 +20,7 @@ From my POV, to be done:
 - Divide project in different classes.
 - Group datepicker and filesize in one column (Left size?)
 - Resize images on the right. (Right column?)
+- Search files by keywords
 """
 
 import os
@@ -71,8 +72,19 @@ canvas2.create_window(400, 75, window=label2)
 #Entry for the number of bytes
 entry1 = tk.Entry (root)
 #Defining default value
-entry1.insert(0, "200")
+entry1.insert(0, "2000000")
 canvas2.create_window(400, 100, window=entry1)
+
+#Label for the question
+label2 = tk.Label(root, text='Keyword of files you want to delete')
+label2.config(font=('Arial', 10))
+canvas2.create_window(400, 125, window=label2)
+
+#Entry for the number of bytes
+entry2 = tk.Entry (root)
+#Defining default value
+entry2.insert(0, "")
+canvas2.create_window(400, 150, window=entry2)
 
 class deleteFilesInFolder:
 
@@ -84,6 +96,7 @@ class deleteFilesInFolder:
         rootDirectory = tk.Tk()
         myDir = tkinter.filedialog.askdirectory(parent=rootDirectory, initialdir="/",
                                             title='Please select a directory')
+        #Filter protected directories
         rootDirectory.destroy()
         return myDir
 
@@ -96,6 +109,7 @@ class deleteFilesInFolder:
     def clean_files(self, myDir):
         """Function to get last access time of""" 
         bytesTreshold = int(entry1.get())
+        keyWord = entry2.get().lower()
         files_to_clean = []
         print("Number of files in folder is: ", len(os.listdir(myDir)), os.listdir(myDir))
         if len(os.listdir(myDir)) > 0:
@@ -103,11 +117,11 @@ class deleteFilesInFolder:
                 for file in files:
                     file_path = os.path.join(subdir, file)
                     modified_date = self.get_file_access_date(file_path)
-                    print("Last date of access is: ", modified_date, " it should be after : ", dateentry.get_date())
+                    print("Last date of access is: ", modified_date, " it should be after: ", dateentry.get_date())
                     fileSize = os.path.getsize(file_path)
                     print("File name in the loop: ", file)
                     print("Dir loop: " , os.path.join(subdir, file))
-                    print("Size of file is: " + str(fileSize) + " it should be less than :" + str(bytesTreshold))
+                    print("Size of file is: " + str(fileSize) + " it should be less than: " + str(bytesTreshold))
                     if modified_date.date() < dateentry.get_date():
                         print("True", modified_date.date(),  dateentry.get_date() )
                     else:
@@ -116,7 +130,7 @@ class deleteFilesInFolder:
                         print("True", fileSize, bytesTreshold)
                     else:
                         print("False", fileSize, bytesTreshold)
-                    if modified_date.date() < dateentry.get_date() and fileSize > bytesTreshold:
+                    if modified_date.date() < dateentry.get_date() and fileSize > bytesTreshold and keyWord in file.lower():
                         files_to_clean.append(file_path)
                     else:
                         print("False no files matching", fileSize, bytesTreshold, modified_date.date(),  dateentry.get_date())                             
@@ -166,7 +180,7 @@ intance = deleteFilesInFolder()
 
 #Button to choose the directory            
 button1 = tk.Button (root, text="Let's save some space",command=intance.save_space, bg='palegreen2', font=('Arial', 11, 'bold')) 
-canvas2.create_window(400, 180, window=button1)
+canvas2.create_window(400, 200, window=button1)
 
 #Button to exit the app
 button3 = tk.Button (root, text='Exit Application', command=root.destroy, bg='lightsteelblue2', font=('Arial', 11, 'bold'))
