@@ -147,7 +147,7 @@ class deleteFilesInFolder:
         """Function to save space on disk""" 
         myDir = self.choose_directory()
         self.clean_files(myDir)
-
+"""hola"""
 
 
 
