@@ -45,11 +45,11 @@ root = tk.Tk()
 root.geometry("900x500")
 root.title("Eco-Bot")
 # Add image file
-bg = PhotoImage(file = os.path.abspath("eco-bot\/bg.png")) 
+#g = PhotoImage(file = os.path.abspath("eco-bot\/bg.png")) 
 #Creating the canvas for the complete dashboard  
 canvas1 = tk.Canvas(root, width = 900, height = 500)
 #Display Image
-canvas1.create_image(0,0, image = bg, anchor = "nw")
+canvas1.create_image(0,0, anchor = "nw")
 
 
 # the variables below size the bar graph
@@ -81,65 +81,6 @@ canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(15))
 
 canvas1.pack(fill = "both", expand = True)
 canvas2 = tk.Canvas(root, width = 900, height = 500)
-
-
-def clean_files_all(myDir):
-    """Clean all files bigger than 2000000000""" 
-    bytesTreshold = 2000000000
-    print(visual.entry1.get())
-    files_to_clean = []
-    print("Number of files in folder is: ", len(os.listdir(myDir)), os.listdir(myDir))
-    if len(os.listdir(myDir)) > 0:
-        for subdir, dirs, files in os.walk(myDir):
-            if not "AppData" in subdir and not "Eclipse" in subdir:
-                for file in files:
-                    file_path = os.path.join(subdir, file)
-                    fileSize = os.path.getsize(file_path)
-                    if fileSize > bytesTreshold:
-                        files_to_clean.append(file_path)
-        if len(files_to_clean) > 0:
-            app = tk.Tk()
-            app.title('List box')
-            files_selected = []
-
-            def clicked():
-                print("clicked")
-                selected = box.curselection()  # returns a tuple
-                for idx in selected:
-                    print(box.get(idx))
-                    files_selected.append(box.get(idx))
-                app.destroy()
-                if self.delete_verification(files_selected, myDir):
-                    #Delete the files
-                    for file in files_selected:
-                        os.remove(file)
-                        print(f"""Following files are deleted {"-- ".join(files_selected)} from folder {myDir}""")
-                        for subdir, dirs, files in os.walk(myDir):
-                            for file in files:
-                                print(os.path.join(subdir, file))
-                    #Delete empty folders
-                    self.remove_empty_folders(myDir)
-                else:
-                    print("Deletion aborted")
-
-            box = tk.Listbox(app, selectmode=tk.MULTIPLE, height=20, width=100)
-            for val in files_to_clean:
-                box.insert(tk.END, val)
-            box.pack()
-
-            button = tk.Button(app, text='Show', width=25, command=clicked)
-            button.pack()
-
-            exit_button = tk.Button(app, text='Close', width=25, command=app.destroy)
-            exit_button.pack()
-            print("after the multi selection")
-
-        else:
-            mb.showinfo("showinfo", "There are no files with the parameters defined.")
-    else:
-        mb.showinfo("showinfo", "The selected directory is empty")
-
-
 
 
 class deleteFilesInFolder:
@@ -257,6 +198,65 @@ class deleteFilesInFolder:
         """Function to save space on disk""" 
         myDir = self.choose_directory()
         self.clean_files(myDir)
+
+
+    def clean_files_all(self):
+        """Clean all files bigger than 2000000000""" 
+        myDir = "/Users/"
+        bytesTreshold = 2000000000
+        print(visual.entry1.get())
+        files_to_clean = []
+        print("Number of files in folder is: ", len(os.listdir(myDir)), os.listdir(myDir))
+        if len(os.listdir(myDir)) > 0:
+            for subdir, dirs, files in os.walk(myDir):
+                if not "AppData" in subdir and not "Eclipse" in subdir:
+                    for file in files:
+                        file_path = os.path.join(subdir, file)
+                        fileSize = os.path.getsize(file_path)
+                        if fileSize > bytesTreshold:
+                            files_to_clean.append(file_path)
+            if len(files_to_clean) > 0:
+                app = tk.Tk()
+                app.title('List box')
+                files_selected = []
+
+                def clicked():
+                    print("clicked")
+                    selected = box.curselection()  # returns a tuple
+                    for idx in selected:
+                        print(box.get(idx))
+                        files_selected.append(box.get(idx))
+                    app.destroy()
+                    if self.delete_verification(files_selected, myDir):
+                        #Delete the files
+                        for file in files_selected:
+                            os.remove(file)
+                            print(f"""Following files are deleted {"-- ".join(files_selected)} from folder {myDir}""")
+                            for subdir, dirs, files in os.walk(myDir):
+                                for file in files:
+                                    print(os.path.join(subdir, file))
+                        #Delete empty folders
+                        self.remove_empty_folders(myDir)
+                    else:
+                        print("Deletion aborted")
+
+                box = tk.Listbox(app, selectmode=tk.MULTIPLE, height=20, width=100)
+                for val in files_to_clean:
+                    box.insert(tk.END, val)
+                box.pack()
+
+                button = tk.Button(app, text='Show', width=25, command=clicked)
+                button.pack()
+
+                exit_button = tk.Button(app, text='Close', width=25, command=app.destroy)
+                exit_button.pack()
+                print("after the multi selection")
+
+            else:
+                mb.showinfo("showinfo", "There are no files with the parameters defined.")
+        else:
+            mb.showinfo("showinfo", "The selected directory is empty")
+
 
 
 class VisualsScreen:
@@ -433,7 +433,7 @@ class VisualsScreenRight:
     def buttons(self):
 
         #Button to choose the directory            
-        free_up_space = Button (root, text="Save up some space now!",command=clean_files_all("/Users/"), bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
+        free_up_space = Button (root, text="Save up some space now!",command=clean_files_all, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
         free_up_space.place(x=590, y = 250)
 
 
