@@ -331,7 +331,7 @@ class VisualsScreen:
     def buttons(self):
 
         #Button to choose the directory            
-        chooseDir_button = Button (root, text="Pick the folder you want to clean!",command=intance.save_space, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
+        chooseDir_button = Button (root, text="Pick the folder you want to clean!",command=instance.save_space, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
         chooseDir_button.place(x=350, y = 400)
        
         style = Style()
@@ -433,14 +433,14 @@ class VisualsScreenRight:
     def buttons(self):
 
         #Button to choose the directory            
-        free_up_space = Button (root, text="Save up some space now!",command=clean_files_all, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
+        free_up_space = Button (root, text="Save up some space now!",command=instance.clean_files_all, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
         free_up_space.place(x=590, y = 250)
 
 
 
 
 #Create an object of the functionalities class
-intance = deleteFilesInFolder()
+instance = deleteFilesInFolder()
 
 #Create an object of the class VisualScreen
 visual = VisualsScreen()
