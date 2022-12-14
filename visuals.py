@@ -119,7 +119,7 @@ root.geometry("900x500")
 root.title("Eco-Bot")
 # Add image file
 
-bg = PhotoImage(file = r"C:\Users\monica.marquez\OneDrive - Accenture\Documents\GitHub\eco-bot\bg.png") 
+bg = PhotoImage(file = os.path.abspath("CustomScripting\eco-bot\/bg.png")) 
 #Creating the canvas for the complete dashboard  
 canvas1 = tk.Canvas(root, width = 900, height = 500)
 #Display Image

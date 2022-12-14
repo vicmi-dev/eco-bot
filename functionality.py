@@ -43,7 +43,7 @@ root = tk.Tk()
 root.geometry("900x500")
 root.title("Eco-Bot")
 # Add image file
-bg = PhotoImage(file = r"C:\Users\monica.marquez\OneDrive - Accenture\Documents\GitHub\eco-bot\bg.png") 
+bg = PhotoImage(file = os.path.abspath("CustomScripting\eco-bot\/bg.png")) 
 #Creating the canvas for the complete dashboard  
 canvas1 = tk.Canvas(root, width = 900, height = 500)
 #Display Image
@@ -108,22 +108,47 @@ class deleteFilesInFolder:
                         print("False no files matching", fileSize, bytesTreshold, modified_date.date(),  visual.dateentry.get_date())                             
                     print("--------------------------------------")
             if len(files_to_clean) > 0:
-                if self.delete_verification(files_to_clean, myDir):
-                    #Delete the files
-                    for file in files_to_clean:
-                        os.remove(file)
-                        print(f"""Following files are deleted {"-- ".join(files_to_clean)} from folder {myDir}""")
-                        for subdir, dirs, files in os.walk(myDir):
-                            for file in files:
-                                print(os.path.join(subdir, file))
-                    #Delete empty folders
-                    self.remove_empty_folders(myDir)
-                else:
-                    print("Deletion aborted")
+                app = tk.Tk()
+                app.title('List box')
+                files_selected = []
+
+                def clicked():
+                    print("clicked")
+                    selected = box.curselection()  # returns a tuple
+                    for idx in selected:
+                        print(box.get(idx))
+                        files_selected.append(box.get(idx))
+                    app.destroy()
+                    if self.delete_verification(files_selected, myDir):
+                        #Delete the files
+                        for file in files_selected:
+                            os.remove(file)
+                            print(f"""Following files are deleted {"-- ".join(files_selected)} from folder {myDir}""")
+                            for subdir, dirs, files in os.walk(myDir):
+                                for file in files:
+                                    print(os.path.join(subdir, file))
+                        #Delete empty folders
+                        self.remove_empty_folders(myDir)
+                    else:
+                        print("Deletion aborted")
+
+                box = tk.Listbox(app, selectmode=tk.MULTIPLE, height=20, width=100)
+                for val in files_to_clean:
+                    box.insert(tk.END, val)
+                box.pack()
+
+                button = tk.Button(app, text='Show', width=25, command=clicked)
+                button.pack()
+
+                exit_button = tk.Button(app, text='Close', width=25, command=app.destroy)
+                exit_button.pack()
+                print("after the multi selection")
+
             else:
                 mb.showinfo("showinfo", "There are no files with the parameters defined.")
         else:
             mb.showinfo("showinfo", "The selected directory is empty")
+
 
     def remove_empty_folders(self, path_abs):
         """Delete empty folders"""
@@ -147,7 +172,6 @@ class deleteFilesInFolder:
         """Function to save space on disk""" 
         myDir = self.choose_directory()
         self.clean_files(myDir)
-"""hola"""
 
 
 
