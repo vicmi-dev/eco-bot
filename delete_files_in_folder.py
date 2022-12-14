@@ -13,14 +13,11 @@ Small GUI created with TKinter which let's user pick a folder, file size and a d
 and it will delete the files in the directory which are older than the selected date and bigger than the selected size.
 
 From my POV, to be done:
-- Adjust position of time picker.
 - Add dialog to let user decide whether they want to resize images or delete files. (Compress some files an option? https://superuser.com/questions/1283070/is-is-good-idea-to-store-long-term-data-in-zip-format)
 - Work on improving overall user experience.
-- Publish repository to Accenture github. https://github.com/vicmi-dev/eco-bot.git
 - Divide project in different classes.
 - Group datepicker and filesize in one column (Left size?)
 - Resize images on the right. (Right column?)
-- Search files by keywords
 """
 
 import os
@@ -136,18 +133,42 @@ class deleteFilesInFolder:
                         print("False no files matching", fileSize, bytesTreshold, modified_date.date(),  dateentry.get_date())                             
                     print("--------------------------------------")
             if len(files_to_clean) > 0:
-                if self.delete_verification(files_to_clean, myDir):
-                    #Delete the files
-                    for file in files_to_clean:
-                        os.remove(file)
-                        print(f"""Following files are deleted {"-- ".join(files_to_clean)} from folder {myDir}""")
-                        for subdir, dirs, files in os.walk(myDir):
-                            for file in files:
-                                print(os.path.join(subdir, file))
-                    #Delete empty folders
-                    self.remove_empty_folders(myDir)
-                else:
-                    print("Deletion aborted")
+                app = tk.Tk()
+                app.title('List box')
+                files_selected = []
+
+                def clicked():
+                    print("clicked")
+                    selected = box.curselection()  # returns a tuple
+                    for idx in selected:
+                        print(box.get(idx))
+                        files_selected.append(box.get(idx))
+                    app.destroy()
+                    if self.delete_verification(files_selected, myDir):
+                        #Delete the files
+                        for file in files_selected:
+                            os.remove(file)
+                            print(f"""Following files are deleted {"-- ".join(files_selected)} from folder {myDir}""")
+                            for subdir, dirs, files in os.walk(myDir):
+                                for file in files:
+                                    print(os.path.join(subdir, file))
+                        #Delete empty folders
+                        self.remove_empty_folders(myDir)
+                    else:
+                        print("Deletion aborted")
+
+                box = tk.Listbox(app, selectmode=tk.MULTIPLE, height=20, width=100)
+                for val in files_to_clean:
+                    box.insert(tk.END, val)
+                box.pack()
+
+                button = tk.Button(app, text='Show', width=25, command=clicked)
+                button.pack()
+
+                exit_button = tk.Button(app, text='Close', width=25, command=app.destroy)
+                exit_button.pack()
+                print("after the multi selection")
+
             else:
                 mb.showinfo("showinfo", "There are no files with the parameters defined.")
         else:
@@ -161,10 +182,10 @@ class deleteFilesInFolder:
                 os.rmdir(path)
                 print(path, " has been removed")
 
-    def delete_verification(self, files_to_clean, myDir):
+    def delete_verification(self, files_selected, myDir):
         """Verify whether user really wants to delete the files"""
         if mb.askyesno('Verify', f"""Do you want to delete these files?
-        {'"-- "'.join(files_to_clean)}"""):
+        {'"-- "'.join(files_selected)}"""):
             mb.showwarning('Yes', 'Files deleted successfully')
             return True
         else:
