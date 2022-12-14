@@ -34,6 +34,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from tkinter import messagebox as mb
 from tkinter import *
+import shutil
+
 
 
 
@@ -48,6 +50,35 @@ bg = PhotoImage(file = os.path.abspath("CustomScripting\eco-bot\/bg.png"))
 canvas1 = tk.Canvas(root, width = 900, height = 500)
 #Display Image
 canvas1.create_image(0,0, image = bg, anchor = "nw")
+
+
+# the variables below size the bar graph
+# experiment with them to fit your needs
+# highest y = max_data_value * y_stretch
+y_stretch = 15
+# gap between lower canvas edge and x axis
+y_gap = 20
+# stretch enough to get all data items in
+x_stretch = 10
+x_width = 10
+
+# calculate reactangle coordinates (integers) for each bar
+x0 = 10 * x_stretch + 10 * x_width
+y0 = 20 * y_stretch
+x1 = 20
+y1 = 100
+# draw the bar
+canvas1.create_rectangle(y0, x0, y1, x1, fill="red")
+# put the y value above each bar
+canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(20))
+
+# calculate reactangle coordinates (integers) for each bar
+y0 = 15 * y_stretch
+# draw the bar
+canvas1.create_rectangle(y0, x0, y1, x1, fill="blue")
+# put the y value above each bar
+canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(15))
+
 canvas1.pack(fill = "both", expand = True)
 canvas2 = tk.Canvas(root, width = 900, height = 500)
 
@@ -61,9 +92,6 @@ class deleteFilesInFolder:
 
     def choose_directory(self):
         """Function to choose the directory""" 
-
-
-
         rootDirectory = tk.Tk()
         myDir = tkinter.filedialog.askdirectory(parent=rootDirectory, initialdir="/",
                                             title='Please select a directory')
@@ -313,6 +341,45 @@ class VisualsScreen:
 
 
 
+class VisualsScreenRight:
+    
+    style = ttk.Style()
+
+    def __init__(self):
+        self.labels()
+        self.buttons()
+        total, used, free = shutil.disk_usage("/")
+
+        print("Total: %d GiB" % (total // (2**30)))
+        print("Used: %d GiB" % (used // (2**30)))
+        print("Free: %d GiB" % (free // (2**30)))
+        
+
+
+
+    def labels(self):
+
+        """ LABEL FOR FILE SIZE """
+        #Label for the question
+        label2 = tk.Label(canvas1, text='Your storage:',
+        width = 40, borderwidth = 1, relief = "solid",bg = "white")
+
+        label2.config(font=('ariel', 10))
+        label2.place(x= 510,y=120) 
+
+        """ LABEL FOR KEYWORD """
+        #Label for the question
+        label2 = tk.Label(canvas1, text='Free up space:', 
+        width = 40, borderwidth = 1, relief = "solid", bg = "white")
+        label2.config(font=('ariel', 10))
+        label2.place(x=510, y = 190) #canvas1.create_window(400, 125, window=label2)
+
+    def buttons(self):
+
+        #Button to choose the directory            
+        free_up_space = Button (root, text="Save up some space now!",command=intance.save_space, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
+        free_up_space.place(x=590, y = 250)
+
 
 
 
@@ -320,8 +387,9 @@ class VisualsScreen:
 intance = deleteFilesInFolder()
 
 #Create an object of the class VisualScreen
-visual = VisualsScreen()
+visualLeft = VisualsScreen()
 
+visualRight = VisualsScreenRight()
 
 #Starting the tk dashboard 
 root.mainloop()
