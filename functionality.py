@@ -62,8 +62,6 @@ class deleteFilesInFolder:
     def choose_directory(self):
         """Function to choose the directory""" 
 
-
-
         rootDirectory = tk.Tk()
         myDir = tkinter.filedialog.askdirectory(parent=rootDirectory, initialdir="/",
                                             title='Please select a directory')
@@ -172,7 +170,6 @@ class deleteFilesInFolder:
         """Function to save space on disk""" 
         myDir = self.choose_directory()
         self.clean_files(myDir)
-
 
 
 class VisualsScreen:
