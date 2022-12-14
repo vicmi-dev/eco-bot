@@ -202,7 +202,6 @@ class deleteFilesInFolder:
         self.clean_files(myDir)
 
 
-
 class VisualsScreen:
 
     # Class variables
