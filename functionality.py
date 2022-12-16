@@ -12,15 +12,18 @@ Created on Sun Jul 17 12:39:03 2022
 Small GUI created with TKinter which let's user pick a folder, file size and a date,
 and it will delete the files in the directory which are older than the selected date and bigger than the selected size.
 
+If you experience issues with tkinter run:
+pip install tkinter     
+
+If you experience issues with tkcalendar run:
+pip install tkcalendar 
+
+
 From my POV, to be done:
-- Adjust position of time picker.
 - Add dialog to let user decide whether they want to resize images or delete files. (Compress some files an option? https://superuser.com/questions/1283070/is-is-good-idea-to-store-long-term-data-in-zip-format)
 - Work on improving overall user experience.
-- Publish repository to Accenture github. https://github.com/vicmi-dev/eco-bot.git
 - Divide project in different classes.
-- Group datepicker and filesize in one column (Left size?)
-- Resize images on the right. (Right column?)
-- Search files by keywords
+- Add graph showing storage.
 """
 
 import os
@@ -45,13 +48,14 @@ root = tk.Tk()
 root.geometry("900x500")
 root.title("Eco-Bot")
 # Add image file
-#g = PhotoImage(file = os.path.abspath("eco-bot\/bg.png")) 
+bg = PhotoImage(file = os.path.abspath("eco-bot\/resources\/bg.png")) 
 #Creating the canvas for the complete dashboard  
 canvas1 = tk.Canvas(root, width = 900, height = 500)
 #Display Image
-canvas1.create_image(0,0, anchor = "nw")
+canvas1.create_image(0,0, image = bg, anchor = "nw")
 
 
+#Graph for storage space:
 # the variables below size the bar graph
 # experiment with them to fit your needs
 # highest y = max_data_value * y_stretch
@@ -62,7 +66,7 @@ y_gap = 20
 x_stretch = 10
 x_width = 10
 
-# calculate reactangle coordinates (integers) for each bar
+""" # calculate reactangle coordinates (integers) for each bar
 x0 = 10 * x_stretch + 10 * x_width
 y0 = 20 * y_stretch
 x1 = 20
@@ -77,10 +81,10 @@ y0 = 15 * y_stretch
 # draw the bar
 canvas1.create_rectangle(y0, x0, y1, x1, fill="blue")
 # put the y value above each bar
-canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(15))
+canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(15))"""
 
 canvas1.pack(fill = "both", expand = True)
-canvas2 = tk.Canvas(root, width = 900, height = 500)
+canvas2 = tk.Canvas(root, width = 900, height = 500) 
 
 
 class deleteFilesInFolder:
@@ -107,7 +111,6 @@ class deleteFilesInFolder:
     def clean_files(self, myDir):
         """Function to get last access time of""" 
         bytesTreshold = int(visual.entry1.get())
-        print(visual.entry1.get())
         keyWord = visual.entry2.get().lower()
         files_to_clean = []
         print("Number of files in folder is: ", len(os.listdir(myDir)), os.listdir(myDir))
@@ -164,10 +167,10 @@ class deleteFilesInFolder:
                     box.insert(tk.END, val)
                 box.pack()
 
-                button = tk.Button(app, text='Show', width=25, command=clicked)
+                button = tk.Button(app, text='Delete selected files', width=25, command=clicked)
                 button.pack()
 
-                exit_button = tk.Button(app, text='Close', width=25, command=app.destroy)
+                exit_button = tk.Button(app, text='Cancel', width=25, command=app.destroy)
                 exit_button.pack()
                 print("after the multi selection")
 
