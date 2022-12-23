@@ -56,6 +56,11 @@ canvas1.create_image(0,0, image = bg, anchor = "nw")
 
 
 #Graph for storage space:
+total, used, free = shutil.disk_usage("/")
+
+print("Total: %d GiB" % (total // (2**30)))
+print("Used: %d GiB" % (used // (2**30)))
+print("Free: %d GiB" % (free // (2**30)))
 # the variables below size the bar graph
 # experiment with them to fit your needs
 # highest y = max_data_value * y_stretch
@@ -66,25 +71,25 @@ y_gap = 20
 x_stretch = 10
 x_width = 10
 
-""" # calculate reactangle coordinates (integers) for each bar
-x0 = 10 * x_stretch + 10 * x_width
-y0 = 20 * y_stretch
+# calculate reactangle coordinates (integers) for each bar
+x0 = (used // (2**30))
+y0 = (total // (2**30))
 x1 = 20
 y1 = 100
 # draw the bar
 canvas1.create_rectangle(y0, x0, y1, x1, fill="red")
 # put the y value above each bar
-canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(20))
+canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(x0)+"/"+str(y0))
 
 # calculate reactangle coordinates (integers) for each bar
 y0 = 15 * y_stretch
 # draw the bar
 canvas1.create_rectangle(y0, x0, y1, x1, fill="blue")
 # put the y value above each bar
-canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(15))"""
+canvas1.create_text(y0+2, x0, anchor=tk.SW)
 
 canvas1.pack(fill = "both", expand = True)
-canvas2 = tk.Canvas(root, width = 900, height = 500) 
+canvas2 = tk.Canvas(root, width = 900, height = 500)
 
 
 class deleteFilesInFolder:
@@ -406,12 +411,8 @@ class VisualsScreenRight:
 
     def __init__(self):
         self.labels()
-        self.buttons()
-        total, used, free = shutil.disk_usage("/")
+        # self.buttons()
 
-        print("Total: %d GiB" % (total // (2**30)))
-        print("Used: %d GiB" % (used // (2**30)))
-        print("Free: %d GiB" % (free // (2**30)))
         
 
 
@@ -424,20 +425,20 @@ class VisualsScreenRight:
         width = 40, borderwidth = 1, relief = "solid",bg = "white")
 
         label2.config(font=('ariel', 10))
-        label2.place(x= 510,y=120) 
+        label2.place(x= 550,y=93) 
 
         """ LABEL FOR KEYWORD """
-        #Label for the question
+        """         #Label for the question
         label2 = tk.Label(canvas1, text='Free up space:', 
         width = 40, borderwidth = 1, relief = "solid", bg = "white")
         label2.config(font=('ariel', 10))
-        label2.place(x=510, y = 190) #canvas1.create_window(400, 125, window=label2)
+        label2.place(x=510, y = 190) #canvas1.create_window(400, 125, window=label2) """
 
-    def buttons(self):
+    """ def buttons(self):
 
         #Button to choose the directory            
         free_up_space = Button (root, text="Save up some space now!",command=instance.clean_files_all, bg= "white",fg = "black", font=('ariel', 11, 'bold')) 
-        free_up_space.place(x=590, y = 250)
+        free_up_space.place(x=590, y = 250) """
 
 
 
