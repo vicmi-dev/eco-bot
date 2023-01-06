@@ -76,15 +76,18 @@ x0 = (used // (2**30))
 y0 = (total // (2**30))
 x1 = 20
 y1 = 100
-# draw the bar
-canvas1.create_rectangle(y0, x0, y1, x1, fill="red")
+# draw the bar RED
+#canvas1.create_rectangle(y0, x0, y1, x1, fill="red")
+canvas1.create_rectangle(650, 150, 650+100*(x0/y0), 200, fill="red")
+
 # put the y value above each bar
 canvas1.create_text(y0+2, x0, anchor=tk.SW, text=str(x0)+"/"+str(y0))
 
 # calculate reactangle coordinates (integers) for each bar
-y0 = 15 * y_stretch
-# draw the bar
-canvas1.create_rectangle(y0, x0, y1, x1, fill="blue")
+#y0 = 15 * y_stretch
+# draw the bar BLUE
+#canvas1.create_rectangle(y0, x0, y1, x1, fill="blue")
+canvas1.create_rectangle(650+100*(x0/y0), 150, 750, 200, fill="blue")
 # put the y value above each bar
 canvas1.create_text(y0+2, x0, anchor=tk.SW)
 
@@ -274,7 +277,7 @@ class VisualsScreen:
     entry1 = tk.Entry (canvas1, borderwidth = 1, relief = "solid",justify= CENTER)
     #Defining default value
     entry1.insert(0, "200")
-    entry1.place(x = 100, y = 120)
+    entry1.place(x = 100, y = 123)
   
     #Entry for the keyword
     entry2 = tk.Entry (canvas1, borderwidth = 1, relief = "solid", justify= CENTER)
@@ -282,18 +285,18 @@ class VisualsScreen:
     entry2.place(x = 100, y =190)
     
     style = ttk.Style()
-
+    # calendar
     style.configure('my.DateEntry',
             fieldbackground='light green',
             background='dark green',
             foreground='dark blue',
             arrowcolor='white')
     dateentry = DateEntry(canvas1, width = 17, style='my.DateEntry',justify= CENTER)
-    dateentry.grid(row=0,column=0,padx=100, pady = 290)
+    dateentry.grid(row=0,column=0,padx=100, pady = 255)
 
 
     
-    Checkbutton1 = IntVar()  
+    """ Checkbutton1 = IntVar()  
     Checkbutton2 = IntVar()  
 
     
@@ -313,7 +316,7 @@ class VisualsScreen:
                         width = 10,bg= "white")
 
     Button1.place(x = 50, y =215)
-    Button2.place(x = 150, y =215)
+    Button2.place(x = 150, y =215) """
 
 
 
@@ -380,7 +383,7 @@ class VisualsScreen:
         width = 40, borderwidth = 1, relief = "solid",bg = "white")
 
         label2.config(font=('ariel', 10))
-        label2.place(x= 10,y=90) 
+        label2.place(x= 10,y=93) 
 
 
 
@@ -401,7 +404,7 @@ class VisualsScreen:
         label2 = tk.Label(canvas1, text='Select the date you want to check files previous from',
         width = 40,borderwidth = 1, relief = "solid", bg = "white")
         label2.config(font=('ariel', 10))
-        label2.place(x= 10, y = 260) #canvas1.create_window(400, 125, window=label2)
+        label2.place(x= 10, y = 225) #canvas1.create_window(400, 125, window=label2)
 
 
 
