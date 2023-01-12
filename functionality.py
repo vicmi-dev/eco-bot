@@ -61,6 +61,7 @@ total, used, free = shutil.disk_usage("/")
 print("Total: %d GiB" % (total // (2**30)))
 print("Used: %d GiB" % (used // (2**30)))
 print("Free: %d GiB" % (free // (2**30)))
+
 # the variables below size the bar graph
 # experiment with them to fit your needs
 # highest y = max_data_value * y_stretch
@@ -194,8 +195,8 @@ class deleteFilesInFolder:
 
     def delete_verification(self, files_to_clean, myDir):
         """Verify whether user really wants to delete the files"""
-        if mb.askyesno('Verify', f"""Do you want to delete these files?
-        {'"-- "'.join(files_to_clean)}"""):
+        print("delete verification")
+        if mb.askyesno('Verify', f"""Are you sure you want to delete the selected files?"""):
             mb.showwarning('Yes', 'Files deleted successfully')
             return True
         else:
